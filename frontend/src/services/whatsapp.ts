@@ -1,18 +1,25 @@
-const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "";
-const STORE_NAME = import.meta.env.VITE_STORE_NAME || "Tienda";
-
-export function buildWhatsAppUrl(message: string) {
+export function buildWhatsAppUrl(message: string, whatsappNumber?: string | null) {
   const encodedMessage = encodeURIComponent(message);
+  const cleanNumber = String(whatsappNumber || "").replace(/\D/g, "");
 
-  if (!WHATSAPP_NUMBER) {
+  if (!cleanNumber) {
     return `https://wa.me/?text=${encodedMessage}`;
   }
 
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+  return `https://wa.me/${cleanNumber}?text=${encodedMessage}`;
 }
 
-export function buildProductMessage(productName: string, price: number) {
-  return `Hola, vengo de ${STORE_NAME}. Me interesa el producto: ${productName}. Precio: $${price.toFixed(
+export function buildProductMessage(
+  storeName: string,
+  productName: string,
+  price: number,
+  baseMessage?: string | null
+) {
+  const intro =
+    baseMessage ||
+    `Hola, vengo de ${storeName}. Quisiera más información sobre sus productos.`;
+
+  return `${intro}\n\nProducto: ${productName}\nPrecio: $${price.toFixed(
     2
-  )}. ¿Sigue disponible?`;
+  )}\n\n¿Sigue disponible?`;
 }

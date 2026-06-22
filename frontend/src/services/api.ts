@@ -1,5 +1,6 @@
 import type { Category, Product } from "../types/product";
 import type { AdminUser, LoginResponse } from "../types/auth";
+import type { StoreSettings, SocialLink } from "../types/settings";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
@@ -280,6 +281,164 @@ export async function deleteAdminCategory(id: number) {
 
   if (!response.ok) {
     throw new Error(data.message || "No se pudo desactivar la categoría");
+  }
+
+  return data;
+}
+export type StoreSettingsPayload = {
+  storeName: string;
+  whatsappNumber?: string;
+  contactEmail?: string;
+  address?: string;
+  whatsappMessage?: string;
+};
+
+export type SocialLinkPayload = {
+  name: string;
+  url: string;
+  icon?: string;
+  status: "ACTIVE" | "INACTIVE";
+  order: number;
+};
+
+export async function getPublicSettings(): Promise<StoreSettings> {
+  const response = await fetch(`${API_URL}/settings`);
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "No se pudo cargar la configuración");
+  }
+
+  return data.settings;
+}
+
+export async function getPublicSocialLinks(): Promise<SocialLink[]> {
+  const response = await fetch(`${API_URL}/settings/social-links`);
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "No se pudieron cargar las redes sociales");
+  }
+
+  return data.socialLinks || [];
+}
+
+export async function getAdminSettings(): Promise<StoreSettings> {
+  const token = getStoredToken();
+
+  const response = await fetch(`${API_URL}/admin/settings`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "No se pudo cargar la configuración");
+  }
+
+  return data.settings;
+}
+
+export async function updateAdminSettings(payload: StoreSettingsPayload) {
+  const token = getStoredToken();
+
+  const response = await fetch(`${API_URL}/admin/settings`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "No se pudo actualizar la configuración");
+  }
+
+  return data.settings;
+}
+
+export async function getAdminSocialLinks(): Promise<SocialLink[]> {
+  const token = getStoredToken();
+
+  const response = await fetch(`${API_URL}/admin/social-links`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "No se pudieron cargar las redes sociales");
+  }
+
+  return data.socialLinks || [];
+}
+
+export async function createAdminSocialLink(payload: SocialLinkPayload) {
+  const token = getStoredToken();
+
+  const response = await fetch(`${API_URL}/admin/social-links`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "No se pudo crear la red social");
+  }
+
+  return data.socialLink;
+}
+
+export async function updateAdminSocialLink(
+  id: number,
+  payload: SocialLinkPayload
+) {
+  const token = getStoredToken();
+
+  const response = await fetch(`${API_URL}/admin/social-links/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "No se pudo actualizar la red social");
+  }
+
+  return data.socialLink;
+}
+
+export async function deleteAdminSocialLink(id: number) {
+  const token = getStoredToken();
+
+  const response = await fetch(`${API_URL}/admin/social-links/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "No se pudo desactivar la red social");
   }
 
   return data;

@@ -12,6 +12,9 @@ import { Products } from "./pages/admin/Products";
 import { ProductForm } from "./pages/admin/ProductForm";
 import { Categories } from "./pages/admin/Categories";
 import { CategoryForm } from "./pages/admin/CategoryForm";
+import { StoreSettings } from "./pages/admin/StoreSettings";
+import { SocialLinks } from "./pages/admin/SocialLinks";
+import { SocialLinkForm } from "./pages/admin/SocialLinkForm";
 
 function App() {
   return (
@@ -32,8 +35,12 @@ function App() {
           <Route path="productos/nuevo" element={<ProductForm />} />
           <Route path="productos/editar/:id" element={<ProductForm />} />
           <Route path="categorias" element={<Categories />} />
-<Route path="categorias/nueva" element={<CategoryForm />} />
-<Route path="categorias/editar/:id" element={<CategoryForm />} />
+          <Route path="categorias/nueva" element={<CategoryForm />} />
+          <Route path="categorias/editar/:id" element={<CategoryForm />} />
+          <Route path="configuracion" element={<StoreSettings />} />
+          <Route path="redes" element={<SocialLinks />} />
+          <Route path="redes/nueva" element={<SocialLinkForm />} />
+          <Route path="redes/editar/:id" element={<SocialLinkForm />} />
         </Route>
       </Route>
     </Routes>

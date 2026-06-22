@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import type { Product } from "../types/product";
+import { useSite } from "../context/SiteContext";
 import { buildProductMessage, buildWhatsAppUrl } from "../services/whatsapp";
 
 type ProductCardProps = {
@@ -7,9 +8,19 @@ type ProductCardProps = {
 };
 
 export function ProductCard({ product }: ProductCardProps) {
-  const whatsappUrl = buildWhatsAppUrl(
-    buildProductMessage(product.name, product.price)
-  );
+const { settings } = useSite();
+
+const storeName = settings?.storeName || "Artesanía MX";
+
+const whatsappUrl = buildWhatsAppUrl(
+  buildProductMessage(
+    storeName,
+    product.name,
+    product.price,
+    settings?.whatsappMessage
+  ),
+  settings?.whatsappNumber
+);
 
   return (
     <article className="overflow-hidden rounded-3xl bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
@@ -46,15 +57,14 @@ export function ProductCard({ product }: ProductCardProps) {
             Ver detalle
           </Link>
         </div>
-
         <a
-          href={whatsappUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-4 block rounded-full border border-yellow-600 px-4 py-2 text-center text-sm font-semibold text-yellow-700 hover:bg-yellow-50"
-        >
-          Pedir por WhatsApp
-        </a>
+  href={whatsappUrl}
+  target="_blank"
+  rel="noreferrer"
+  className="mt-4 block rounded-full border border-yellow-600 px-4 py-2 text-center text-sm font-semibold text-yellow-700 hover:bg-yellow-50"
+>
+  Pedir por WhatsApp
+</a>
       </div>
     </article>
   );

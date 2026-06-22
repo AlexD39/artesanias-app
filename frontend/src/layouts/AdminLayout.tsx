@@ -36,6 +36,14 @@ export function AdminLayout() {
               Categorías
             </NavLink>
 
+            <NavLink to="/admin/configuracion" className={linkClass}>
+              Configuración
+            </NavLink>
+
+<NavLink to="/admin/redes" className={linkClass}>
+  Redes
+</NavLink>
+
             <Link
               to="/tienda"
               className="rounded-xl px-4 py-2 text-neutral-700 hover:bg-yellow-100"

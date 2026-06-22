@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { getProductBySlug } from "../services/api";
 import type { Product } from "../types/product";
+import { useSite } from "../context/SiteContext";
 import { buildProductMessage, buildWhatsAppUrl } from "../services/whatsapp";
 
 export function ProductDetail() {
@@ -46,9 +47,19 @@ export function ProductDetail() {
     );
   }
 
-  const whatsappUrl = buildWhatsAppUrl(
-    buildProductMessage(product.name, product.price)
-  );
+  const { settings } = useSite();
+
+  const storeName = settings?.storeName || "Artesanía MX";
+
+const whatsappUrl = buildWhatsAppUrl(
+  buildProductMessage(
+    storeName,
+    product.name,
+    product.price,
+    settings?.whatsappMessage
+  ),
+  settings?.whatsappNumber
+);
 
   return (
     <main className="mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-2">
