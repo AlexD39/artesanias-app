@@ -11,12 +11,29 @@ export function Products() {
   async function loadProducts() {
     try {
       setLoading(true);
+      setError("");
+
       const data = await getAdminProducts();
       setProducts(data);
-    } catch (err) {
+    } catch {
       setError("No se pudieron cargar los productos admin.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleDeactivate(product: Product) {
+    const confirmDelete = confirm(
+      `¿Seguro que deseas desactivar el producto "${product.name}"?`
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteAdminProduct(product.id);
+      await loadProducts();
+    } catch {
+      alert("No se pudo desactivar el producto.");
     }
   }
 
@@ -31,24 +48,10 @@ export function Products() {
       OUT_OF_STOCK: "bg-yellow-100 text-yellow-700",
     };
 
-    async function handleDeactivate(product: Product) {
-  const confirmDelete = confirm(
-    `¿Seguro que deseas desactivar el producto "${product.name}"?`
-  );
-
-  if (!confirmDelete) return;
-
-  try {
-    await deleteAdminProduct(product.id);
-    await loadProducts();
-  } catch {
-    alert("No se pudo desactivar el producto.");
-  }
-}
-
-
     return (
-      <span className={`rounded-full px-3 py-1 text-xs font-bold ${classes[status]}`}>
+      <span
+        className={`rounded-full px-3 py-1 text-xs font-bold ${classes[status]}`}
+      >
         {status}
       </span>
     );
@@ -66,18 +69,25 @@ export function Products() {
           </h1>
         </div>
 
-        <Link to="/admin/productos/nuevo" className="rounded-2xl bg-neutral-900 px-5 py-3 font-bold text-white hover:bg-yellow-700" >
-            Nuevo producto
+        <Link
+          to="/admin/productos/nuevo"
+          className="rounded-2xl bg-neutral-900 px-5 py-3 font-bold text-white hover:bg-yellow-700"
+        >
+          Nuevo producto
         </Link>
       </div>
 
       <div className="mt-8 overflow-hidden rounded-3xl bg-white shadow-sm">
         {loading && (
-          <p className="p-6 text-center text-neutral-600">Cargando productos...</p>
+          <p className="p-6 text-center text-neutral-600">
+            Cargando productos...
+          </p>
         )}
 
         {error && (
-          <p className="p-6 text-center font-semibold text-red-600">{error}</p>
+          <p className="p-6 text-center font-semibold text-red-600">
+            {error}
+          </p>
         )}
 
         {!loading && !error && (
@@ -110,7 +120,9 @@ export function Products() {
                     </td>
 
                     <td className="px-5 py-4">
-                      <p className="font-bold text-neutral-900">{product.name}</p>
+                      <p className="font-bold text-neutral-900">
+                        {product.name}
+                      </p>
                       <p className="mt-1 line-clamp-1 text-sm text-neutral-500">
                         {product.shortDescription}
                       </p>
@@ -128,24 +140,25 @@ export function Products() {
                       {product.stock}
                     </td>
 
-                    <td className="px-5 py-4">{statusBadge(product.status)}</td>
+                    <td className="px-5 py-4">
+                      {statusBadge(product.status)}
+                    </td>
 
                     <td className="px-5 py-4">
                       <div className="flex gap-2">
                         <Link
-  to={`/admin/productos/editar/${product.id}`}
-  className="rounded-xl bg-yellow-100 px-4 py-2 text-sm font-bold text-yellow-800 hover:bg-yellow-200"
->
-  Editar
-</Link>
+                          to={`/admin/productos/editar/${product.id}`}
+                          className="rounded-xl bg-yellow-100 px-4 py-2 text-sm font-bold text-yellow-800 hover:bg-yellow-200"
+                        >
+                          Editar
+                        </Link>
 
-<button
-  onClick={() => handleDeactivate(product)}
-  className="rounded-xl bg-red-100 px-4 py-2 text-sm font-bold text-red-700 hover:bg-red-200"
->
-  Desactivar
-</button>
-
+                        <button
+                          onClick={() => handleDeactivate(product)}
+                          className="rounded-xl bg-red-100 px-4 py-2 text-sm font-bold text-red-700 hover:bg-red-200"
+                        >
+                          Desactivar
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -153,7 +166,10 @@ export function Products() {
 
                 {products.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="px-5 py-8 text-center text-neutral-500">
+                    <td
+                      colSpan={7}
+                      className="px-5 py-8 text-center text-neutral-500"
+                    >
                       No hay productos registrados.
                     </td>
                   </tr>
