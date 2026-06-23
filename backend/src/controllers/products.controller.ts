@@ -40,7 +40,16 @@ export async function getProductBySlug(
   next: NextFunction
 ) {
   try {
-    const { slug } = req.params;
+    const slugParam = req.params.slug;
+
+    if (!slugParam || Array.isArray(slugParam)) {
+      return res.status(400).json({
+        ok: false,
+        message: "Slug inválido",
+      });
+    }
+
+    const slug = String(slugParam);
 
     const product = await prisma.product.findUnique({
       where: { slug },
@@ -48,16 +57,16 @@ export async function getProductBySlug(
         category: true,
         images: {
           orderBy: {
-            order: "asc"
-          }
-        }
-      }
+            order: "asc",
+          },
+        },
+      },
     });
 
     if (!product || product.status !== "ACTIVE") {
       return res.status(404).json({
         ok: false,
-        message: "Producto no encontrado"
+        message: "Producto no encontrado",
       });
     }
 
@@ -65,8 +74,8 @@ export async function getProductBySlug(
       ok: true,
       product: {
         ...product,
-        price: Number(product.price)
-      }
+        price: Number(product.price),
+      },
     });
   } catch (error) {
     next(error);
