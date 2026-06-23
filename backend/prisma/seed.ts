@@ -105,6 +105,20 @@ async function main() {
     }
   });
 
+await prisma.storeSetting.upsert({
+  where: { id: 1 },
+  update: {},
+  create: {
+    id: 1,
+    storeName: "Artesanía MX",
+    whatsappNumber: "123456798",
+    contactEmail: "contacto@artesanias.com",
+    address: "México",
+    whatsappMessage:
+      "Hola, vengo de la tienda web. Quisiera más información sobre sus productos.",
+  },
+});  
+
   console.log("Seed ejecutado correctamente.");
 }
 

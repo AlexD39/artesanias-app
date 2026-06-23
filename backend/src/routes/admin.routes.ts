@@ -14,6 +14,15 @@ import {
 } from "../controllers/admin-categories.controller";
 import { adminUploadProductImage } from "../controllers/admin-upload.controller";
 import { uploadProductImage } from "../middlewares/upload.middleware";
+import {
+  adminCreateSocialLink,
+  adminDeleteSocialLink,
+  adminGetSettings,
+  adminGetSocialLinks,
+  adminUpdateSettings,
+  adminUpdateSocialLink,
+} from "../controllers/admin-settings.controller";
+
 
 const router = Router();
 
@@ -34,5 +43,12 @@ router.post("/categories", adminCreateCategory);
 router.put("/categories/:id", adminUpdateCategory);
 router.delete("/categories/:id", adminDeleteCategory);
 
+router.get("/settings", adminGetSettings);
+router.put("/settings", adminUpdateSettings);
+
+router.get("/social-links", adminGetSocialLinks);
+router.post("/social-links", adminCreateSocialLink);
+router.put("/social-links/:id", adminUpdateSocialLink);
+router.delete("/social-links/:id", adminDeleteSocialLink);
 
 export default router;
